@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration xmlns="http://ch.qos.logback/xml/ns/logback"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://ch.qos.logback/xml/ns/logback https://raw.githubusercontent.com/enricopulatzo/logback-XSD/master/src/main/xsd/logback.xsd">
+  <!-- const -->
+  <property name="ROOT_LEVEL" value="INFO" />
+  <property name="LOG_DIR" value="./logs/" />
+  <property name="FILE_CHARSET" value="UTF-8" />
+  <property name="CONSOLE_LOGGING_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS,JST} %highlight(%-5level) [%cyan(%t)] %yellow(%C{1.}): %white(%msg) %n%red(%throwable)" />
+  <property name="FILE_LOGGING_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS,JST} [%p] %C{1.} [%t] %m%n" />
+
+  <!-- logger config -->
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>TRACE</level>
+    </filter>
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <pattern>${CONSOLE_LOGGING_PATTERN}</pattern>
+    </layout>
+  </appender>
+  <appender name="DEBUG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <append>true</append>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>TRACE</level>
+    </filter>
+    <file>${LOG_DIR}debug.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${LOG_DIR}archives/debug.%d{yyyy-MM-dd}.zip</fileNamePattern>
+      <maxHistory>30</maxHistory>
+    </rollingPolicy>
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <charset>${FILE_CHARSET}</charset>
+      <pattern>${FILE_LOGGING_PATTERN}</pattern>
+    </encoder>
+  </appender>
+  <appender name="INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <append>true</append>
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>INFO</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+    <file>${LOG_DIR}info.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${LOG_DIR}archives/info.%d{yyyy-MM-dd}.zip</fileNamePattern>
+      <maxHistory>30</maxHistory>
+    </rollingPolicy>
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <charset>${FILE_CHARSET}</charset>
+      <pattern>${FILE_LOGGING_PATTERN}</pattern>
+    </encoder>
+  </appender>
+  <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <append>true</append>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>WARN</level>
+    </filter>
+    <file>${LOG_DIR}error.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${LOG_DIR}history/error_%d{yyyy-MM-dd}.zip</fileNamePattern>
+      <maxHistory>30</maxHistory>
+    </rollingPolicy>
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <charset>${FILE_CHARSET}</charset>
+      <pattern>${FILE_LOGGING_PATTERN}</pattern>
+    </encoder>
+  </appender>
+
+  <!-- Async Log -->
+  <appender name="ASYNC_STDOUT" class="ch.qos.logback.classic.AsyncAppender">
+    <appender-ref ref="STDOUT"/>
+  </appender>
+  <appender name="ASYNC_INFO" class="ch.qos.logback.classic.AsyncAppender">
+    <appender-ref ref="INFO"/>
+  </appender>
+  <appender name="ASYNC_ERROR" class="ch.qos.logback.classic.AsyncAppender">
+    <appender-ref ref="ERROR"/>
+  </appender>
+  <appender name="ASYNC_DEBUG" class="ch.qos.logback.classic.AsyncAppender">
+    <appender-ref ref="DEBUG"/>
+  </appender>
+
+  <!-- This file appender is used to output aggregated performance statistics -->
+  <appender name="perf4jFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${LOG_DIR}perf4j.log</file>
+    <encoder>
+      <pattern>${FILE_LOGGING_PATTERN}</pattern>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${LOG_DIR}perf4j.%d{yyyy-MM-dd}.log</fileNamePattern>
+    </rollingPolicy>
+  </appender>
+
+  <!-- Logger configure -->
+  <logger name="org.perf4j.TimingLogger" additivity="false">
+    <appender-ref ref="perf4jFileAppender"/>
+  </logger>
+  <logger name="org.springframework" level="INFO">
+    <appender-ref ref="ASYNC_STDOUT"/>
+    <appender-ref ref="ASYNC_INFO"/>
+  </logger>
+  <logger name="org.apache.http" level="INFO">
+    <appender-ref ref="ASYNC_STDOUT"/>
+    <appender-ref ref="ASYNC_INFO"/>
+  </logger>
+  <logger name="org.apache.commons.configuration" level="INFO">
+    <appender-ref ref="ASYNC_STDOUT"/>
+    <appender-ref ref="ASYNC_INFO"/>
+  </logger>
+  <logger name="org.javalite.activejdbc.DB" level="DEBUG">
+    <appender-ref ref="ASYNC_STDOUT"/>
+    <appender-ref ref="ASYNC_DEBUG"/>
+  </logger>
+
+  <root level="${ROOT_LEVEL}">
+    <appender-ref ref="STDOUT"/>
+    <appender-ref ref="INFO"/>
+    <appender-ref ref="ERROR"/>
+    <appender-ref ref="ASYNC_DEBUG"/>
+  </root>
+</configuration>

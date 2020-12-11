@@ -1,0 +1,25 @@
+* text=auto eol=lf encoding=UTF-8
+
+# Generic
+*.java eol=lf encoding=UTF-8
+*.css eol=lf encoding=UTF-8
+*.js eol=lf encoding=UTF-8
+*.md eol=lf encoding=UTF-8
+*.txt eol=lf encoding=UTF-8
+*.xml eol=lf encoding=UTF-8
+*.properties eol=lf encoding=UTF-8
+
+# Images
+*.gif binary
+*.ico binary
+*.jpg binary
+*.png binary
+*.svg eol=lf encoding=UTF-8
+
+# Executable
+*.sh eol=lf encoding=UTF-8
+*.cmd text eol=crlf
+*.exe binary
+*.jar binary
+
+.gitkeep export-ignore

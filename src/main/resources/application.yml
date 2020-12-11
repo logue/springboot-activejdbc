@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: ${env.APP_NAME:Spring Boot Application}
+  devtools:
+    restart:
+      enabled: true
+      additional-exclude: src/main/java/dev/logue/app/infrastructure/persistence/models
